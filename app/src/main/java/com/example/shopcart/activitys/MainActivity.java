@@ -4,12 +4,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.shopcart.adapters.CategoryAdapter;
 import com.example.shopcart.adapters.ProductAdapter;
 import com.example.shopcart.databinding.ActivityMainBinding;
 import com.example.shopcart.models.Category;
 import com.example.shopcart.models.Product;
+import com.example.shopcart.utils.Constants;
+
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,19 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
         initCategory();
         initProduct();
+        initSlider();
 
+    }
+
+    private void initSlider() {
+        getRecentOffers();
     }
 
     private void initProduct() {
         productArrayList = new ArrayList<>();
-        String link = "https://img.freepik.com/free-photo/cool-geometric-triangular-figure-neon-laser-light-great-backgrounds-wallpapers_181624-9331.jpg?w=2000" ;
-
-        productArrayList.add(new Product("mobile", link, "xxx", 12, 10, 2, 3));
-        productArrayList.add(new Product("lappy", link, "xxx", 12, 10, 2, 3));
-        productArrayList.add(new Product("pc", link, "xxx", 12, 10, 2, 3));
-        productArrayList.add(new Product("mac", link, "xxx", 12, 10, 2, 3));
-
         productAdapter = new ProductAdapter(this , productArrayList);
+
+        getRecentProducts();
+
         GridLayoutManager manager= new GridLayoutManager(this, 2);
         binding.productList.setLayoutManager(manager);
         binding.productList.setAdapter(productAdapter);
@@ -47,16 +59,132 @@ public class MainActivity extends AppCompatActivity {
 
     private void initCategory() {
         categoryArrayList = new ArrayList<>();
-        String link = "https://img.freepik.com/free-photo/cool-geometric-triangular-figure-neon-laser-light-great-backgrounds-wallpapers_181624-9331.jpg?w=2000" ;
-        categoryArrayList.add(new Category("sport", link,"#FF018786", "yse we are", 1));
-        categoryArrayList.add(new Category("maru", link,"#FF018786", "yse we are", 1));
-        categoryArrayList.add(new Category("sport", link,"#FF018786", "yse we are", 1));
-        categoryArrayList.add(new Category("sport", link,"#FF018786", "yse we are", 1));
-        categoryArrayList.add(new Category("sport", link,"#FF018786", "yse we are", 1));
-
         categoryAdapter = new CategoryAdapter(this , categoryArrayList);
+
+        getCategories();
+
         GridLayoutManager manager= new GridLayoutManager(this, 4);
         binding.categoriesList.setLayoutManager(manager);
         binding.categoriesList.setAdapter(categoryAdapter);
+    }
+
+    // get All Category from Api
+    public void getCategories(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Making Request to get All Categories
+        StringRequest request = new StringRequest(Request.Method.GET, Constants.GET_CATEGORIES_URL, response -> {
+            Log.d("API_TEST", response);
+            try {
+                Log.d("REQUEST_STATUS", response.toString());
+                JSONObject mainObject = new JSONObject(response);
+                if (mainObject.getString("status").equals("success")) {
+                    JSONArray categoriesArray = mainObject.getJSONArray("categories");
+                    for (int i = 0; i < categoriesArray.length(); i++) {
+                        JSONObject object = categoriesArray.getJSONObject(i);
+                        Category category = new Category(
+                                object.getString("name"),
+                                Constants.CATEGORIES_IMAGE_URL + object.getString("icon"),
+                                object.getString("color"),
+                                object.getString("brief"),
+                                object.getInt("id")
+                        );
+                        categoryArrayList.add(category);
+                    }
+                    categoryAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Log.i("Error_Occurred", "Error_Occurred");
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                Log.i("REQUEST_STATUS", "DATA_NOT_FOUND");
+            }
+        }, error -> {
+
+        });
+
+        queue.add(request);
+    }
+
+    // get Product from Api
+    public void getRecentProducts(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Making Request to get All Categories
+        String url = Constants.GET_PRODUCTS_URL + "?count=8";
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            Log.d("API_TEST", response);
+            try {
+                Log.d("REQUEST_STATUS", response.toString());
+                JSONObject mainObject = new JSONObject(response);
+                if (mainObject.getString("status").equals("success")) {
+                    JSONArray productsArray = mainObject.getJSONArray("products");
+                    for (int i = 0; i < productsArray.length(); i++) {
+                        JSONObject object = productsArray.getJSONObject(i);
+                        Product product = new Product(
+                                object.getString("name"),
+                                Constants.PRODUCTS_IMAGE_URL + object.getString("image"),
+                                object.getString("status"),
+                                object.getDouble("price"),
+                                object.getDouble("price_discount"),
+                                object.getInt("stock"),
+                                object.getInt("id")
+                        );
+                        productArrayList.add(product);
+                    }
+                    productAdapter.notifyDataSetChanged();
+                }
+                else {
+                    Log.i("Error_Occurred", "Error_Occurred");
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                Log.i("REQUEST_STATUS", "DATA_NOT_FOUND");
+            }
+        }, error -> {
+
+        });
+
+        queue.add(request);
+    }
+
+    // get Offers Image Sliders from Api
+    public void getRecentOffers(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Making Request to get All Categories
+        StringRequest request = new StringRequest(Request.Method.GET,Constants.GET_OFFERS_URL, response -> {
+            Log.d("API_TEST", response);
+            try {
+                Log.d("REQUEST_Slider", response.toString());
+                JSONObject mainObject = new JSONObject(response);
+                if (mainObject.getString("status").equals("success")) {
+                    JSONArray offerArray = mainObject.getJSONArray("news_infos");
+                    for (int i = 0; i < offerArray.length(); i++) {
+                        JSONObject childObj = offerArray.getJSONObject(i);
+                        // Adding Data into the Slider
+                        binding.carousel.addData(new CarouselItem(
+                                Constants.NEWS_IMAGE_URL+childObj.getString("image"),
+                                childObj.getString("title")
+                        ));
+                    }
+                }
+                else {
+                    Log.i("Error_Occurred", "Error_Occurred");
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                Log.i("REQUEST_STATUS", "DATA_NOT_FOUND");
+            }
+        }, error -> {
+
+        });
+
+        queue.add(request);
+
     }
 }
