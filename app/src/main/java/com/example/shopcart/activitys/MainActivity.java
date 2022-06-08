@@ -3,8 +3,10 @@ package com.example.shopcart.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         initCategory();
         initProduct();
         initSlider();
+
+        binding.cartItem.setOnClickListener(v -> {
+            startActivity(new Intent(this, CartActivity.class));
+        });
 
     }
 

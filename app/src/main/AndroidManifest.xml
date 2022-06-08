@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.shopcart">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ShopCart">
+        android:theme="@style/Theme.ShopCart"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activitys.CartActivity"
+            android:exported="false"
+            android:label="Shopping Cart Item"
+            android:theme="@style/Theme.ShopCart.ActionBar"  />
         <activity
             android:name=".activitys.ProductDetailActivity"
             android:exported="false"
-            android:theme="@style/Theme.ShopCart.ActionBar"/>
+            android:theme="@style/Theme.ShopCart.ActionBar" />
         <activity
             android:name=".activitys.MainActivity"
             android:exported="true">
