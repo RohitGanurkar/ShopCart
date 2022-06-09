@@ -13,10 +13,15 @@
         android:theme="@style/Theme.ShopCart"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activitys.CheckOutActivity"
+            android:exported="false"
+            android:label="CheckOut Item"
+            android:theme="@style/Theme.ShopCart.ActionBar" />
+        <activity
             android:name=".activitys.CartActivity"
             android:exported="false"
             android:label="Shopping Cart Item"
-            android:theme="@style/Theme.ShopCart.ActionBar"  />
+            android:theme="@style/Theme.ShopCart.ActionBar" />
         <activity
             android:name=".activitys.ProductDetailActivity"
             android:exported="false"

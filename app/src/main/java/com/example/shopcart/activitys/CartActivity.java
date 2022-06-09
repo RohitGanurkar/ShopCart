@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.shopcart.R;
@@ -56,6 +58,14 @@ public class CartActivity extends AppCompatActivity {
         binding.cartList.setAdapter(cartAdapter);
 
         binding.subtotal.setText(String.format("PKR %.2f",cart.getTotalPrice()));
+
+        // when continueBtn was clicked
+        binding.continueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CartActivity.this, CheckOutActivity.class));
+            }
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
