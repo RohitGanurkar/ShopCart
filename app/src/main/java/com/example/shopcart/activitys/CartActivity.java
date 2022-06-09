@@ -5,13 +5,19 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.shopcart.R;
 import com.example.shopcart.adapters.CartAdapter;
 import com.example.shopcart.databinding.ActivityCartBinding;
 import com.example.shopcart.models.Product;
+import com.hishd.tinycart.model.Cart;
+import com.hishd.tinycart.model.Item;
+import com.hishd.tinycart.util.TinyCartHelper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
     ActivityCartBinding binding;
@@ -24,11 +30,24 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         products = new ArrayList<>();
-        products.add(new Product("pro 1", "", "123", 15,55,15,1));
-        products.add(new Product("pro 1", "", "123", 15,55,15,1));
-        products.add(new Product("pro 1", "", "123", 15,55,15,1));
 
-        cartAdapter = new CartAdapter(this, products);
+        //Using Library for cart
+        Cart cart = TinyCartHelper.getCart();
+        for (Map.Entry<Item , Integer> item : cart.getAllItemsWithQty().entrySet()){
+            Product product = (Product) item.getKey();
+            int quantity = item.getValue();
+            product.setQuantity(quantity);
+            products.add(product);
+        }
+
+        // Adapter for Cart RV
+        cartAdapter = new CartAdapter(this, products, new CartAdapter.CartListener() {
+            @Override
+            public void onQuantityChanged() {
+                binding.subtotal.setText(String.format("PKR %.2f",cart.getTotalPrice()));
+//                getAllPrice();
+            }
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
@@ -36,14 +55,26 @@ public class CartActivity extends AppCompatActivity {
         binding.cartList.addItemDecoration(itemDecoration);
         binding.cartList.setAdapter(cartAdapter);
 
+        binding.subtotal.setText(String.format("PKR %.2f",cart.getTotalPrice()));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
+// get all price without using library's method
+//    private void getAllPrice() {
+//        double price = 0;
+//        for (Product p:
+//             products) {
+//            price = price + (p.getPrice() * p.getQuantity());
+//        }
+//        Toast.makeText(this, price+"", Toast.LENGTH_SHORT).show();
+//        Log.d("Total_Price", price+"");
+//    }
 
     @Override
-    public boolean onNavigateUp() {
+    public boolean onSupportNavigateUp() {
         finish();
-        return super.onNavigateUp();
+        return super.onSupportNavigateUp();
     }
+
 }

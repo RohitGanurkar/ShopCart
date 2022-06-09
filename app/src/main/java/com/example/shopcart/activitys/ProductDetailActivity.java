@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,13 +19,17 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.shopcart.R;
 import com.example.shopcart.databinding.ActivityProductDetailBinding;
+import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.hishd.tinycart.model.Cart;
+import com.hishd.tinycart.util.TinyCartHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProductDetailActivity extends AppCompatActivity {
     ActivityProductDetailBinding binding;
+    Product currentProduct;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,42 +43,67 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(image)
-                .placeholder(R.drawable.placeholder)
                 .into(binding.productImage);
-        binding.productDescription.setText("PRODUCT");
 
         getProductDetails(id);
 
         getSupportActionBar().setTitle(name);
 
-        // for Default Back Button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
 
-    void getProductDetails(int id){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = Constants.GET_PRODUCT_DETAILS_URL + id ;
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            try {
-                JSONObject object = new JSONObject(response);
-                if(object.getString("status").equals("success")){
-                    JSONObject product = object.getJSONObject("product");
-                    String description = product.getString("description");
-                    binding.productDescription.setText(Html.fromHtml(description));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        // when Add to cart button was Clicked
+        Cart cart = TinyCartHelper.getCart();
+        binding.addToCartBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cart.addItem(currentProduct,1);
+                binding.addToCartBtn.setEnabled(false);
+                binding.addToCartBtn.setText("Added in cart");
             }
-        }, error -> {
-
         });
-        queue.add(request);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return super.onSupportNavigateUp();
+    // Get all Products Details
+    void getProductDetails(int id) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = Constants.GET_PRODUCT_DETAILS_URL + id;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if(object.getString("status").equals("success")) {
+                        JSONObject product = object.getJSONObject("product");
+                        String description = product.getString("description");
+                        binding.productDescription.setText(
+                                Html.fromHtml(description)
+                        );
+
+                        currentProduct = new Product(
+                                product.getString("name"),
+                                Constants.PRODUCTS_IMAGE_URL + product.getString("image"),
+                                product.getString("status"),
+                                product.getDouble("price"),
+                                product.getDouble("price_discount"),
+                                product.getInt("stock"),
+                                product.getInt("id")
+                        );
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
     }
 
     @Override
@@ -84,9 +114,16 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.cart){
+        if(item.getItemId() == R.id.cart) {
             startActivity(new Intent(this, CartActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
 }
