@@ -18,6 +18,7 @@ import com.example.shopcart.databinding.ActivityMainBinding;
 import com.example.shopcart.models.Category;
 import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONArray;
@@ -44,6 +45,26 @@ public class MainActivity extends AppCompatActivity {
 
         binding.cartItem.setOnClickListener(v -> {
             startActivity(new Intent(this, CartActivity.class));
+        });
+
+        // When Search Button was clicked
+        binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                intent.putExtra("query", text.toString());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+
+            }
         });
 
     }
