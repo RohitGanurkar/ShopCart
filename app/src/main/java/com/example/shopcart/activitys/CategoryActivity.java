@@ -1,18 +1,25 @@
 package com.example.shopcart.activitys;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.shopcart.R;
 import com.example.shopcart.adapters.ProductAdapter;
 import com.example.shopcart.databinding.ActivityCategoryBinding;
 import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,6 +59,27 @@ public class CategoryActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.cart, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.cart) {
+            startActivity(new Intent(this, CartActivity.class));
+        }
+        if(item.getItemId() == R.id.myOrder) {
+            Toast.makeText(this, "Order" , Toast.LENGTH_SHORT).show();
+        }
+        if(item.getItemId() == R.id.logOut) {
+            Toast.makeText(this, "logout" , Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void getProducts(int catId) {

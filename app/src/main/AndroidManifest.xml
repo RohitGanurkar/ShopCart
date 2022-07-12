@@ -13,6 +13,26 @@
         android:theme="@style/Theme.ShopCart"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activitys.OrderDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ShopCart.ActionBar" />
+        <activity
+            android:name=".activitys.OrderActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ShopCart.ActionBar" />
+        <activity
+            android:name=".activitys.SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activitys.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activitys.SearchActivity"
             android:exported="false"
             android:theme="@style/Theme.ShopCart.ActionBar" />
@@ -42,13 +62,7 @@
             android:theme="@style/Theme.ShopCart.ActionBar" />
         <activity
             android:name=".activitys.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

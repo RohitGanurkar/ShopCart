@@ -1,24 +1,30 @@
 package com.example.shopcart.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.shopcart.R;
 import com.example.shopcart.adapters.CategoryAdapter;
 import com.example.shopcart.adapters.ProductAdapter;
 import com.example.shopcart.databinding.ActivityMainBinding;
 import com.example.shopcart.models.Category;
 import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.razorpay.Checkout;
 
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 import org.json.JSONArray;
@@ -28,6 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    ProgressDialog progressDialog;
     ActivityMainBinding binding;
     CategoryAdapter categoryAdapter;
     ProductAdapter productAdapter;
@@ -39,13 +46,33 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Processing...");
+
+        binding.searchBar.inflateMenu(R.menu.cart, R.drawable.ic_cart);
+        binding.searchBar.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.cart){
+                    startActivity(new Intent(MainActivity.this, CartActivity.class));
+                }
+                if (item.getItemId() == R.id.myOrder){
+                    Toast.makeText(MainActivity.this, "Order", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, OrderActivity.class));
+                }
+                if (item.getItemId() == R.id.logOut){
+                    Toast.makeText(MainActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+                return false;
+            }
+        });
+
         initCategory();
         initProduct();
         initSlider();
-
-        binding.cartItem.setOnClickListener(v -> {
-            startActivity(new Intent(this, CartActivity.class));
-        });
 
         // When Search Button was clicked
         binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
@@ -97,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     // get All Category from Api
     public void getCategories(){
+        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Making Request to get All Categories
@@ -119,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                         categoryArrayList.add(category);
                     }
                     categoryAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
                 }
                 else {
                     Log.i("Error_Occurred", "Error_Occurred");
@@ -137,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
     // get Product from Api
     public void getRecentProducts(){
+        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Making Request to get All Categories
@@ -162,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                         productArrayList.add(product);
                     }
                     productAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
                 }
                 else {
                     Log.i("Error_Occurred", "Error_Occurred");
@@ -180,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     // get Offers Image Sliders from Api
     public void getRecentOffers(){
+        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Making Request to get All Categories
@@ -202,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     Log.i("Error_Occurred", "Error_Occurred");
                 }
+                progressDialog.dismiss();
             }
             catch (JSONException e) {
                 e.printStackTrace();

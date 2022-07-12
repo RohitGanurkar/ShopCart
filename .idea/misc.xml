@@ -3,6 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.174" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable/edittext_bg.xml" value="0.174" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable/ic_cart.xml" value="0.174" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable/ic_folder.xml" value="0.174" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable/ic_launcher_background.xml" value="0.174" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/drawable/login_text_bg.xml" value="0.11" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_login.xml" value="0.4" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_main.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_order.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_order_detail.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_payment.xml" value="0.2" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_signup.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/activity_singup.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/order_detail_layout.xml" value="0.8800000000000001" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/layout/order_layout.xml" value="1.2" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/menu/cart.xml" value="0.23645833333333333" />
+        <entry key="..\:/Tutorial/CollegeProject/ShopCart/app/src/main/res/menu/order.xml" value="0.23645833333333333" />
         <entry key="..\:/Tutorial/ShopCart/app/src/main/res/drawable/edittext_bg.xml" value="0.2125" />
         <entry key="..\:/Tutorial/ShopCart/app/src/main/res/drawable/ic_cart.xml" value="0.2125" />
         <entry key="..\:/Tutorial/ShopCart/app/src/main/res/drawable/ic_folder.xml" value="0.2125" />

@@ -26,6 +26,7 @@ import com.example.shopcart.adapters.CartAdapter;
 import com.example.shopcart.databinding.ActivityCheckOutBinding;
 import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
 import com.hishd.tinycart.model.Cart;
 import com.hishd.tinycart.model.Item;
 import com.hishd.tinycart.util.TinyCartHelper;
@@ -103,6 +104,7 @@ public class CheckOutActivity extends AppCompatActivity {
         JSONObject productOrder = new JSONObject();
         JSONObject dataObject = new JSONObject();
         try {
+            productOrder.put("userId", FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
             productOrder.put("address",binding.addressBox.getText().toString());
             productOrder.put("buyer",binding.nameBox.getText().toString());
             productOrder.put("comment", binding.commentBox.getText().toString());

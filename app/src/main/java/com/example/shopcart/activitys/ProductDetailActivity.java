@@ -3,12 +3,14 @@ package com.example.shopcart.activitys;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,6 +23,7 @@ import com.example.shopcart.R;
 import com.example.shopcart.databinding.ActivityProductDetailBinding;
 import com.example.shopcart.models.Product;
 import com.example.shopcart.utils.Constants;
+import com.google.firebase.auth.FirebaseAuth;
 import com.hishd.tinycart.model.Cart;
 import com.hishd.tinycart.util.TinyCartHelper;
 
@@ -28,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProductDetailActivity extends AppCompatActivity {
+    ProgressDialog progressDialog;
     ActivityProductDetailBinding binding;
     Product currentProduct;
     @Override
@@ -35,6 +39,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityProductDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Processing...");
 
         String name = getIntent().getStringExtra("name");
         String image = getIntent().getStringExtra("image");
@@ -65,6 +73,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     // Get all Products Details
     void getProductDetails(int id) {
+        progressDialog.show();
         RequestQueue queue = Volley.newRequestQueue(this);
 
         String url = Constants.GET_PRODUCT_DETAILS_URL + id;
@@ -92,6 +101,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                         );
 
                     }
+                    progressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -116,6 +126,14 @@ public class ProductDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.cart) {
             startActivity(new Intent(this, CartActivity.class));
+        }
+        if(item.getItemId() == R.id.myOrder) {
+            Toast.makeText(this, "Order" , Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.logOut){
+            Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
